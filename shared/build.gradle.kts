@@ -5,6 +5,9 @@ plugins {
     alias(libs.plugins.androidMultiplatformLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.serialization)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 kotlin {
@@ -17,6 +20,12 @@ kotlin {
             isStatic = true
         }
     }
+
+    room {
+        schemaDirectory("$projectDir/schemas")
+    }
+
+
     android {
        namespace = "com.hasancbngl.bookapp.shared"
        compileSdk = libs.versions.android.compileSdk.get().toInt()
@@ -40,6 +49,9 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.compose.uiTooling)
+
+            implementation(libs.bundles.koin.android)
+            implementation(libs.ktor.client.okhttp)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -50,10 +62,34 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+
+            implementation(libs.androidx.lifecycle.viewmodelCompose)
+            implementation(libs.androidx.lifecycle.runtimeCompose)
+
+            implementation(libs.material3.adaptive)
+            implementation(libs.material3.adaptive.layout)
+            implementation(libs.compose.ui.backhandler)
+            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.coil.compose)
+            implementation(libs.jetbrains.compose.navigation)
+
+            implementation(libs.bundles.compose.ui)
+            implementation(libs.bundles.koin.common)
+            implementation(libs.bundles.androidx.lifecycle)
+
+            implementation(libs.bundles.ktor)
+
+            implementation(libs.androidx.room.runtime)
+            implementation(libs.sqlite.bundled)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
+
+        nativeMain.dependencies {
+            implementation(libs.ktor.client.darwin)
+        }
+
         getByName("androidDeviceTest").dependencies {
             implementation(libs.androidx.testRunner)
         }
