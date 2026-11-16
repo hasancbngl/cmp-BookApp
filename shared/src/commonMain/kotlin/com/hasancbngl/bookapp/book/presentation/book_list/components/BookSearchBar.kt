@@ -102,7 +102,6 @@ fun BookSearchBar(
 @Composable
 fun BookSearchBarPreview() {
     MaterialTheme {
-
         BookSearchBar(
             "",
             {},
