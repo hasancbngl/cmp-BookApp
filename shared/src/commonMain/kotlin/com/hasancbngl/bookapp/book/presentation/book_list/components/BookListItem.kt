@@ -131,7 +131,8 @@ fun BookListItem(
                 }
             }
             Column(
-                modifier = Modifier.fillMaxHeight()
+                modifier = Modifier
+                    .fillMaxHeight()
                     .weight(1f),
                 verticalArrangement = Arrangement.Center
             ) {
