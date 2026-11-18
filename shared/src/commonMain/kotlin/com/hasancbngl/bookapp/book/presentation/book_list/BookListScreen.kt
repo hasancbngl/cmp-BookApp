@@ -183,7 +183,8 @@ private fun BookListScreen(
                 Spacer(modifier = Modifier.height(4.dp))
                 HorizontalPager(
                     state = pagerState,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .weight(1f)
                 ) { pageIndex ->
                     Box(
@@ -275,8 +276,10 @@ private val books = (1..100).map {
 fun BookListScreenPreview() {
     BookListScreen(
         state = BookListState(
-            searchQuery = "kotlin",
-            searchResults = books
+            searchResults = books,
+            isLoading = false,
+            favoriteBooks = books,
+            selectedTabIndex = 1
         ),
         onAction = {
 
