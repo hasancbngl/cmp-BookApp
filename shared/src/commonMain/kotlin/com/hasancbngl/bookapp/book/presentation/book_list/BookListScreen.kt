@@ -134,8 +134,10 @@ private fun BookListScreen(
                         .padding(vertical = 12.dp)
                         .fillMaxWidth(),
                     containerColor = DesertWhite,
+                    contentColor = SandYellow,
                     indicator = {
                         TabRowDefaults.SecondaryIndicator(
+                            color = SandYellow,
                             modifier = Modifier.tabIndicatorOffset(
                                 selectedTabIndex = state.selectedTabIndex,
                                 matchContentSize = false
