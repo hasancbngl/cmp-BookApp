@@ -33,7 +33,11 @@ class KtorRemoteBookDataSource(
     }
 
     override suspend fun getBookDetails(bookWorkId: String): Result<BookWorkDto, DataError.Remote> {
-
+        safeCall<BookWorkDto> {
+            httpClient.get(
+                urlString = "${BASE_URL}/works/$bookWorkId.json"
+            )
+        }
     }
 
 }
