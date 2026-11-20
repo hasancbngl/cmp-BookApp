@@ -21,6 +21,9 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.hasancbngl.bookapp.book.presentation.SharedBookViewModel
+import com.hasancbngl.bookapp.book.presentation.book_detail.BookDetailAction
+import com.hasancbngl.bookapp.book.presentation.book_detail.BookDetailScreenRoot
+import com.hasancbngl.bookapp.book.presentation.book_detail.BookDetailViewModel
 import com.hasancbngl.bookapp.book.presentation.book_list.BookListScreenRoot
 import com.hasancbngl.bookapp.book.presentation.book_list.BookListViewModel
 import org.koin.compose.viewmodel.koinViewModel
@@ -59,16 +62,24 @@ fun App() {
                 composable<Route.BookDetail> { entry ->
                     //retrieve the args and then the id
                     val args = entry.toRoute<Route.BookDetail>()
+                    val viewModel = koinViewModel<BookDetailViewModel>()
                     val sharedBookViewModel =
                         entry.sharedKoinViewModel<SharedBookViewModel>(navController)
                     val selectedBook by sharedBookViewModel.selectedBook.collectAsStateWithLifecycle()
 
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text("book detail screen the id is :${selectedBook.toString()}")
+                    LaunchedEffect(selectedBook) {
+                        selectedBook?.let {
+                            viewModel.onAction(BookDetailAction.OnSelectedBookChange(it))
+                        }
                     }
+
+                    BookDetailScreenRoot(
+                        viewModel = viewModel,
+                        onBackClick = {
+                            navController.navigateUp()
+                        },
+
+                        )
                 }
             }
         }
