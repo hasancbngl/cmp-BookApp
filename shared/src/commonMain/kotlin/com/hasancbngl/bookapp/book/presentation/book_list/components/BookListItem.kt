@@ -133,6 +133,7 @@ fun BookListItem(
             Column(
                 modifier = Modifier
                     .fillMaxHeight()
+                    .padding(start = 24.dp)
                     .weight(1f),
                 verticalArrangement = Arrangement.Center
             ) {
