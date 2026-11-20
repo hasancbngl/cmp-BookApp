@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -107,6 +108,7 @@ fun BlurredImageBackground(
             modifier = Modifier
                 .align(Alignment.TopStart)
                 .padding(top = 16.dp, start = 16.dp)
+                .statusBarsPadding()
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -167,7 +169,7 @@ fun BlurredImageBackground(
                                                 radius = 70f
                                             )
                                         )
-                                ){
+                                ) {
                                     Icon(
                                         imageVector = if (isFavorite) Icons.Filled.Favorite
                                         else Icons.Outlined.FavoriteBorder,
@@ -196,8 +198,10 @@ fun BlurredImageBackgroundPreview() {
         onBackClick = {},
         content = {
             Text("Test")
-            Column(modifier = Modifier.height(200.dp)
-                .background(Color.Red)) {
+            Column(
+                modifier = Modifier.height(200.dp)
+                    .background(Color.Red)
+            ) {
                 Text("Test column 2 ")
             }
         }
