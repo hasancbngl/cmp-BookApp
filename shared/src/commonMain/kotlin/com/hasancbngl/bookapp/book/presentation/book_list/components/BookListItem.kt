@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
@@ -47,6 +48,7 @@ import com.hasancbngl.bookapp.core.presentation.LightBlue
 import com.hasancbngl.bookapp.core.presentation.PulseAnimation
 import com.hasancbngl.bookapp.core.presentation.SandYellow
 import org.jetbrains.compose.resources.painterResource
+import kotlin.collections.copy
 import kotlin.math.round
 
 @Composable
@@ -57,8 +59,9 @@ fun BookListItem(
 ) {
     Surface(
         shape = RoundedCornerShape(32.dp),
-        modifier = modifier.clickable(onClick = onClick),
-        color = LightBlue.copy(alpha = .2f)
+        modifier = modifier
+            .clickable(onClick = onClick),
+        color = LightBlue.copy(alpha = 0.2f)
     ) {
         Row(
             modifier = Modifier
@@ -73,7 +76,6 @@ fun BookListItem(
                     .height(100.dp),
                 contentAlignment = Alignment.Center
             ) {
-                //image
                 var imageLoadResult by remember {
                     mutableStateOf<Result<Painter>?>(null)
                 }
@@ -81,12 +83,10 @@ fun BookListItem(
                     model = book.imageUrl,
                     onSuccess = {
                         imageLoadResult =
-                            if (it.painter.intrinsicSize.width > 1 &&
-                                it.painter.intrinsicSize.height > 1
-                            ) {
+                            if (it.painter.intrinsicSize.width > 1 && it.painter.intrinsicSize.height > 1) {
                                 Result.success(it.painter)
                             } else {
-                                Result.failure(Exception("invalid image size"))
+                                Result.failure(Exception("Invalid image size"))
                             }
                     },
                     onError = {
@@ -99,7 +99,9 @@ fun BookListItem(
                 val transition by animateFloatAsState(
                     targetValue = if (painterState is AsyncImagePainter.State.Success) {
                         1f
-                    } else 0f,
+                    } else {
+                        0f
+                    },
                     animationSpec = tween(durationMillis = 800)
                 )
 
@@ -110,11 +112,15 @@ fun BookListItem(
 
                     else -> {
                         Image(
-                            painter = if (result.isSuccess) painter
-                            else painterResource(Res.drawable.book_error_2),
+                            painter = if (result.isSuccess) painter else {
+                                painterResource(Res.drawable.book_error_2)
+                            },
                             contentDescription = book.title,
-                            contentScale = if (result.isSuccess) ContentScale.Crop
-                            else ContentScale.Fit,
+                            contentScale = if (result.isSuccess) {
+                                ContentScale.Crop
+                            } else {
+                                ContentScale.Fit
+                            },
                             modifier = Modifier
                                 .aspectRatio(
                                     ratio = 0.65f,
@@ -122,7 +128,7 @@ fun BookListItem(
                                 )
                                 .graphicsLayer {
                                     rotationX = (1f - transition) * 30f
-                                    val scale = 0.8f + (.2f + transition)
+                                    val scale = 0.8f + (0.2f * transition)
                                     scaleX = scale
                                     scaleY = scale
                                 }
@@ -133,11 +139,9 @@ fun BookListItem(
             Column(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .padding(start = 24.dp)
                     .weight(1f),
                 verticalArrangement = Arrangement.Center
             ) {
-                //texts
                 Text(
                     text = book.title,
                     style = MaterialTheme.typography.titleMedium,
@@ -153,7 +157,9 @@ fun BookListItem(
                     )
                 }
                 book.averageRating?.let { rating ->
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Text(
                             text = "${round(rating * 10) / 10.0}",
                             style = MaterialTheme.typography.bodyMedium
@@ -166,11 +172,11 @@ fun BookListItem(
                     }
                 }
             }
-            //icon
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = null,
-                modifier = Modifier.size(36.dp)
+                modifier = Modifier
+                    .size(36.dp)
             )
         }
     }
