@@ -73,6 +73,7 @@ kotlin {
             implementation(libs.compose.ui.backhandler)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.coil.compose)
+            implementation(libs.coil.network.ktor3)
             implementation(libs.jetbrains.compose.navigation)
 
             implementation(libs.bundles.compose.ui)
