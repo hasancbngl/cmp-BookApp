@@ -5,14 +5,22 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.hasancbngl.bookapp.book.presentation.SharedBookViewModel
 import com.hasancbngl.bookapp.book.presentation.book_list.BookListScreenRoot
 import com.hasancbngl.bookapp.book.presentation.book_list.BookListViewModel
 import org.koin.compose.viewmodel.koinViewModel
@@ -31,9 +39,17 @@ fun App() {
             ) {
                 composable<Route.BookList> {
                     val viewModel = koinViewModel<BookListViewModel>()
+                    val sharedBookViewModel =
+                        it.sharedKoinViewModel<SharedBookViewModel>(navController)
+
+                    LaunchedEffect(true) {
+                        sharedBookViewModel.onSelectBook(null)
+                    }
+
                     BookListScreenRoot(
                         viewModel = viewModel,
                         onBookClick = { book ->
+                            sharedBookViewModel.onSelectBook(book)
                             navController.navigate(
                                 Route.BookDetail(book.id)
                             )
@@ -43,15 +59,31 @@ fun App() {
                 composable<Route.BookDetail> { entry ->
                     //retrieve the args and then the id
                     val args = entry.toRoute<Route.BookDetail>()
+                    val sharedBookViewModel =
+                        entry.sharedKoinViewModel<SharedBookViewModel>(navController)
+                    val selectedBook by sharedBookViewModel.selectedBook.collectAsStateWithLifecycle()
 
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text("book detail screen the id is :${args.id}")
+                        Text("book detail screen the id is :${selectedBook.toString()}")
                     }
                 }
             }
         }
     }
+}
+
+@Composable
+private inline fun <reified T : ViewModel> NavBackStackEntry.sharedKoinViewModel(
+    navController: NavController
+): T {
+    val navGraphRoute = destination.parent?.route ?: return koinViewModel<T>()
+    val parentEntry = remember(this) {
+        navController.getBackStackEntry(navGraphRoute)
+    }
+    return koinViewModel(
+        viewModelStoreOwner = parentEntry
+    )
 }
