@@ -127,7 +127,7 @@ fun BlurredImageBackground(
                     .height(230.dp)
                     .aspectRatio(2 / 3f),
                 shape = RoundedCornerShape(8.dp),
-                elevation = CardDefaults.cardElevation(
+                elevation = CardDefaults.elevatedCardElevation(
                     15.dp
                 )
             ) {
