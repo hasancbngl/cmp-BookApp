@@ -1,5 +1,7 @@
 package com.hasancbngl.bookapp.app
 
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -40,7 +42,12 @@ fun App() {
             navigation<Route.BookGraph>(
                 startDestination = Route.BookList
             ) {
-                composable<Route.BookList> {
+                composable<Route.BookList>(
+                    exitTransition = { slideOutHorizontally() },
+                    popEnterTransition = {
+                        slideInHorizontally()
+                    }
+                ) {
                     val viewModel = koinViewModel<BookListViewModel>()
                     val sharedBookViewModel =
                         it.sharedKoinViewModel<SharedBookViewModel>(navController)
@@ -59,7 +66,18 @@ fun App() {
                         }
                     )
                 }
-                composable<Route.BookDetail> { entry ->
+                composable<Route.BookDetail>(
+                    enterTransition = {
+                        slideInHorizontally { initialOffSet ->
+                            initialOffSet
+                        }
+                    },
+                    exitTransition = {
+                        slideOutHorizontally { initialOffSet ->
+                            initialOffSet
+                        }
+                    }
+                ) { entry ->
                     //retrieve the args and then the id
                     val args = entry.toRoute<Route.BookDetail>()
                     val viewModel = koinViewModel<BookDetailViewModel>()
@@ -78,8 +96,7 @@ fun App() {
                         onBackClick = {
                             navController.navigateUp()
                         },
-
-                        )
+                    )
                 }
             }
         }
